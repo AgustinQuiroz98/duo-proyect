@@ -14,7 +14,7 @@ app = Flask(__name__)
 app.secret_key = "H4N S0L0"
 
 bcrypt = Bcrypt(app)
-#matias
+
 
 UPLOAD_FOLDER = 'uploads/'
 if not os.path.exists(UPLOAD_FOLDER):
