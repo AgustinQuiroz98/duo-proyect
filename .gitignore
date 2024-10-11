@@ -1,0 +1,7 @@
+# virtual enviroment of python
+my-env/
+my-env/*
+
+# 
+__pycache__/
+__pycache__/*

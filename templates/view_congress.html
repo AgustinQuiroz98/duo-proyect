@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Congressy View</title>
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}" />
+  </head>
+  <body>
+    <nav>
+      <div class="nav-links">
+        <a href="/congress/">
+          <img
+            src="{{url_for('static', filename='Congressy-logo.png')}}"
+            alt="Congressy logo"
+          />
+        </a>
+        <a href="/congress/">Conferencias</a>
+        <a href="/create/">Crear Conferencia</a>
+      </div>
+      <a class="nav-profile" href="/profile/">
+        <p>{{session['nombre']}}</p>
+        {% if session['imagenPerfil'] %}
+        <img
+          src="{{url_for('uploads', filename=session['imagenPerfil'])}}"
+          alt="imagen perfil"
+          class="profile-img"
+        />
+        {% else %}
+        <img
+          src="{{url_for('static', filename='usuario-de-perfil.png')}}"
+          alt="icono imagen"
+          class="profile-img"
+        />
+        {% endif %}
+      </a>
+    </nav>
+    <div class="container">
+      {% if conferencia %}
+      <h1>{{conferencia.nombre}}</h1>
+      {% endif %} {% if conferencia.imagen %}
+      <img
+        src="{{url_for('uploads', filename=conferencia.imagen)}}"
+        alt="imagen conferencia"
+        class="img-congress"
+      />
+      {% else %}
+      <img
+        src="{{url_for('static', filename='photo.png')}}"
+        alt="icono imagen"
+      />
+      {% endif %}
+      <div class="info-field">Fecha Conferencia: {{conferencia.fecha}}</div>
+      <div class="info-field">Tipo de Conferencia: {{conferencia.tipo}}</div>
+      {% if conferencia.tipo == 'private' %}
+      <div class="info-field">Fecha Conferencia: {{conferencia.fecha}}</div>
+      {% endif %}
+      <div class="info-field">Ubicación: {{conferencia.linkUbicacion}}</div>
+
+      <div class="speaker-data">
+        <h2>Speaker/s</h2>
+        {% for speaker in conferencia.speaker %} {% if speaker.imagen %}
+        <img
+          src="{{url_for('uploads', filename=speaker.imagen)}}"
+          alt="imagen conferencia"
+          class="img-speaker"
+        />
+        {% endif %} {% if speaker.nombre %}
+        <div class="info-field-speaker">Nombre: {{speaker.nombre}}</div>
+        {% endif %}{% if speaker.email %}
+        <div class="info-field-speaker">Email: {{speaker.email}}</div>
+        {% endif %}{% if speaker.linkedin %}
+        <div class="info-field-speaker">Linkedin: {{speaker.linkedin}}</div>
+        {% endif %}{% if speaker.empresa %}
+        <div class="info-field-speaker">Empresa: {{speaker.empresa}}</div>
+        {% endif %}{% if speaker.cargo %}
+        <div class="info-field-speaker">Cargo: {{speaker.cargo}}</div>
+        {% endif %}{% endfor %}
+      </div>
+      <div class="speaker-data">
+        <h2>Contenido/s</h2>
+        {% for contenido in conferencia.contenido %} {% if contenido.tipo ==
+        'file' %}
+        <a
+          href="{{url_for('uploads', filename=contenido.contenido)}}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="{{url_for('static', filename='document.png')}}"
+            alt="file icon"
+            class="file-icon"
+          />
+        </a>
+        {% elif contenido.tipo == 'text' %}
+        <a
+          href="{{url_for('uploads', filename=contenido.contenido)}}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="{{url_for('static', filename='url.png')}}"
+            alt="file icon"
+            class="file-icon"
+          />
+        </a>
+        {% endif %} {% endfor %}
+      </div>
+    </div>
+  </body>
+</html>
