@@ -1,7 +1,13 @@
 # virtual enviroment of python
 my-env/
 my-env/*
+venv/
+venv/*
 
-# 
+# Carpetas cache
 __pycache__/
 __pycache__/*
+
+# Carpta Config
+config/
+config/*
