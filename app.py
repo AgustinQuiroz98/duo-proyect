@@ -83,6 +83,16 @@ def congressView():
 
   return render_template("congress.html", conferencias=conferencias)
 
+@app.route("/mias/" , methods=["GET"])
+def congressView2():
+  if not session:
+    return redirect("/")
+
+  user_id = session["id"]
+  conferencias = Conferencia.getCongressForCongressView(user_id)
+
+  return render_template("mis-conferencias.html", conferencias=conferencias)
+
 @app.route("/create/", methods=["GET"])
 def createCongressView():
   if not session:

@@ -23,7 +23,9 @@
           />
         </a>
         <a href="/congress/">Conferencias</a>
-        <a href="/create/">Crear Conferencia</a>
+        <a href="/mias/">Mis Conferencias</a>
+        <!--<a href="/create/">Crear Conferencia</a>-->
+
       </div>
       <a class="nav-profile" href="/profile/">
         <p>{{session['nombre']}}</p>
@@ -76,33 +78,6 @@
         <a href="" class="btn btn2">Ver más</a>
       </div>
     </div>
-    <div class="container mb-3">
-      <h2>Mis Conferencias</h2>
-      <div class="row mb-3">
-        {% for conferencia in conferencias %} {% if conferencia.usuario.id ==
-        session["id"] %}
-        <div class="col-lg-3">
-          <div class="conference-card">
-            {% if conferencia.imagen %}
-            <img src="{{conferencia.imagen}}" alt="imagen conferencia" />
-            {% else %}
-            <img
-              src="{{url_for('static', filename='photo.png')}}"
-              alt="icono imagen"
-            />
-            {% endif %}
-
-            <h3>{{conferencia.nombre}}</h3>
-            <div class="mb-3">
-              <a href="" class="btn">Ver Conferencia</a>
-            </div>
-          </div>
-        </div>
-        {% endif %} {% endfor %}
-      </div>
-      <div class="ver-mas-container">
-        <a href="" class="btn btn2">Ver más</a>
-      </div>
     </div>
     {% else %}
     <div class="container">

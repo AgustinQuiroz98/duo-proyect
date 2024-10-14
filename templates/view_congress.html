@@ -12,6 +12,7 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}" />
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
   </head>
   <body>
     <nav>
@@ -23,7 +24,8 @@
           />
         </a>
         <a href="/congress/">Conferencias</a>
-        <a href="/create/">Crear Conferencia</a>
+        <!--<a href="/create/">Crear Conferencia</a>-->
+        <button class="btn btn-primary" id="qr-btn">Ver QR</button>
       </div>
       <a class="nav-profile" href="/profile/">
         <p>{{session['nombre']}}</p>
@@ -43,6 +45,7 @@
       </a>
     </nav>
     <div class="container">
+      <canvas id="qr-code"></canvas>
       {% if conferencia %}
       <h1>{{conferencia.nombre}}</h1>
       {% endif %} {% if conferencia.imagen %}
@@ -114,5 +117,14 @@
         {% endif %} {% endfor %}
       </div>
     </div>
+    <script>
+      document.getElementById('qr-btn').addEventListener('click', function () {
+        const qr = new QRious({
+          element: document.getElementById('qr-code'),
+          value: window.location.href,
+          size: 200,
+        });
+      });
+    </script>
   </body>
 </html>

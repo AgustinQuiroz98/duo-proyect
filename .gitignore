@@ -12,3 +12,4 @@ __pycache__/*
 config/
 config/*
 db.py
+pipfile
