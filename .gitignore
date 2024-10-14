@@ -11,3 +11,4 @@ __pycache__/*
 # Carpta Config
 config/
 config/*
+db.py
