@@ -13,6 +13,12 @@
     />
     <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}" />
     <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+    <!-- Fancybox -->
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"
+    />
   </head>
   <body>
     <nav>
@@ -24,8 +30,7 @@
           />
         </a>
         <a href="/congress/">Conferencias</a>
-        <!--<a href="/create/">Crear Conferencia</a>-->
-        <button class="btn btn-primary" id="qr-btn">Ver QR</button>
+        <a href="/my-congress/">Mis Conferencias</a>
       </div>
       <a class="nav-profile" href="/profile/">
         <p>{{session['nombre']}}</p>
@@ -45,6 +50,14 @@
       </a>
     </nav>
     <div class="container">
+      <div class="mb-3 btns-view-congress">
+        <a href="#qr-code" data-fancybox="qr">
+          <button class="btn btn-submit" id="qr-btn">Ver QR</button>
+        </a>
+        <a href="/create/">
+          <button class="btn btn-submit">Crear Conferencia</button>
+        </a>
+      </div>
       <canvas id="qr-code"></canvas>
       {% if conferencia %}
       <h1>{{conferencia.nombre}}</h1>
@@ -118,11 +131,20 @@
       </div>
     </div>
     <script>
-      document.getElementById('qr-btn').addEventListener('click', function () {
+      window.addEventListener("load", () => {
+        let qr_url = window.location.href;
+        if (qr_url.includes("#")) {
+          qr_url = qr_url.split("#")[0];
+          console.log("url cambiada: ", qr_url);
+        }
+
         const qr = new QRious({
-          element: document.getElementById('qr-code'),
-          value: window.location.href,
-          size: 200,
+          element: document.getElementById("qr-code"),
+          value: qr_url,
+          size: 400,
+        });
+        Fancybox.bind('[data-fancybox="qr"]', {
+          // Your custom options
         });
       });
     </script>

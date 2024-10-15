@@ -78,20 +78,20 @@ def congressView():
   if not session:
     return redirect("/")
   
-  user_id = session["id"]
-  conferencias = Conferencia.getCongressForCongressView(user_id)
+  # user_id = session["id"]
+  conferencias = Conferencia.getCongressForCongressView()
 
   return render_template("congress.html", conferencias=conferencias)
 
-@app.route("/mias/" , methods=["GET"])
-def congressView2():
+@app.route("/my-congress/" , methods=["GET"])
+def myCongressView():
   if not session:
     return redirect("/")
 
   user_id = session["id"]
-  conferencias = Conferencia.getCongressForCongressView(user_id)
+  mis_conferencias = Conferencia.getCongressForMyCongressView(user_id)
 
-  return render_template("mis-conferencias.html", conferencias=conferencias)
+  return render_template("mis-conferencias.html", conferencias=mis_conferencias)
 
 @app.route("/create/", methods=["GET"])
 def createCongressView():

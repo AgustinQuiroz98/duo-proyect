@@ -36,13 +36,22 @@ class Conferencia:
     return conferencias
   
   @classmethod
-  def getCongressForCongressView(cls, id):
+  def getCongressForCongressView(cls):
     query = """
-    SELECT * FROM (
-      ( SELECT * FROM Conferencias WHERE fecha >= CURRENT_DATE AND user_id = %(id)s ORDER BY fecha DESC LIMIT 4 )
-      UNION ALL 
-      ( SELECT * FROM Conferencias WHERE fecha >= CURRENT_DATE AND user_id != %(id)s ORDER BY fecha DESC LIMIT 4 )
-      ) AS resultados;"""
+    SELECT * FROM Conferencias WHERE fecha >= CURRENT_DATE ORDER BY fecha DESC LIMIT 4; 
+    """
+    results = connectToMySQL("congressy_db").query_db(query)
+    conferencias = []
+    for result in results:
+      conferencia = cls(result)
+      conferencias.append(conferencia)
+    return conferencias
+  
+  @classmethod
+  def getCongressForMyCongressView(cls, id):
+    query = """
+    SELECT * FROM Conferencias WHERE fecha >= CURRENT_DATE AND user_id = %(id)s ORDER BY fecha DESC LIMIT 4; 
+    """
     results = connectToMySQL("congressy_db").query_db(query, {"id" : id})
     conferencias = []
     for result in results:

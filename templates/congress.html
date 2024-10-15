@@ -23,9 +23,7 @@
           />
         </a>
         <a href="/congress/">Conferencias</a>
-        <a href="/mias/">Mis Conferencias</a>
-        <!--<a href="/create/">Crear Conferencia</a>-->
-
+        <a href="/my-congress/">Mis Conferencias</a>
       </div>
       <a class="nav-profile" href="/profile/">
         <p>{{session['nombre']}}</p>
@@ -48,8 +46,7 @@
     <div class="container mb-3">
       <h2>Próximas Conferencias</h2>
       <div class="row mb-3">
-        {% for conferencia in conferencias %} {% if conferencia.usuario.id !=
-        session["id"] %}
+        {% for conferencia in conferencias %}
         <div class="col-lg-3">
           <div class="conference-card">
             {% if conferencia.imagen %}
@@ -72,12 +69,11 @@
             </div>
           </div>
         </div>
-        {% endif %} {% endfor %}
+        {% endfor %}
       </div>
       <div class="ver-mas-container">
         <a href="" class="btn btn2">Ver más</a>
       </div>
-    </div>
     </div>
     {% else %}
     <div class="container">
