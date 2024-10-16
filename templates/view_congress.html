@@ -50,17 +50,14 @@
       </a>
     </nav>
     <div class="container">
+      <canvas id="qr-code"></canvas>
+      {% if conferencia %}
       <div class="mb-3 btns-view-congress">
+        <h1>{{conferencia.nombre}}</h1>
         <a href="#qr-code" data-fancybox="qr">
           <button class="btn btn-submit" id="qr-btn">Ver QR</button>
         </a>
-        <a href="/create/">
-          <button class="btn btn-submit">Crear Conferencia</button>
-        </a>
       </div>
-      <canvas id="qr-code"></canvas>
-      {% if conferencia %}
-      <h1>{{conferencia.nombre}}</h1>
       {% endif %} {% if conferencia.imagen %}
       <img
         src="{{url_for('uploads', filename=conferencia.imagen)}}"
@@ -76,58 +73,74 @@
       <div class="info-field">Fecha Conferencia: {{conferencia.fecha}}</div>
       <div class="info-field">Tipo de Conferencia: {{conferencia.tipo}}</div>
       {% if conferencia.tipo == 'private' %}
-      <div class="info-field">Fecha Conferencia: {{conferencia.fecha}}</div>
+      <div class="info-field">
+        Link Inscripción: {{conferencia.linkInscripcion}}
+      </div>
       {% endif %}
       <div class="info-field">Ubicación: {{conferencia.linkUbicacion}}</div>
+      <div class="info-field">Hora Inicio: {{conferencia.hora_inicio}}</div>
+      <div class="info-field">Hora Termino: {{conferencia.hora_termino}}</div>
 
       <div class="speaker-data">
         <h2>Speaker/s</h2>
-        {% for speaker in conferencia.speaker %} {% if speaker.imagen %}
-        <img
-          src="{{url_for('uploads', filename=speaker.imagen)}}"
-          alt="imagen conferencia"
-          class="img-speaker"
-        />
-        {% endif %} {% if speaker.nombre %}
-        <div class="info-field-speaker">Nombre: {{speaker.nombre}}</div>
-        {% endif %}{% if speaker.email %}
-        <div class="info-field-speaker">Email: {{speaker.email}}</div>
-        {% endif %}{% if speaker.linkedin %}
-        <div class="info-field-speaker">Linkedin: {{speaker.linkedin}}</div>
-        {% endif %}{% if speaker.empresa %}
-        <div class="info-field-speaker">Empresa: {{speaker.empresa}}</div>
-        {% endif %}{% if speaker.cargo %}
-        <div class="info-field-speaker">Cargo: {{speaker.cargo}}</div>
-        {% endif %}{% endfor %}
+        {% for speaker in conferencia.speaker %}
+        <div class="speaker-container">
+          {% if speaker.imagen %}
+          <img
+            src="{{url_for('uploads', filename=speaker.imagen)}}"
+            alt="imagen conferencia"
+            class="img-speaker"
+          />
+          {% else %}
+          <img
+            src="{{url_for('static', filename='usuario-de-perfil.png')}}"
+            alt="icono imagen"
+            class="img-speaker"
+          />
+          {% endif %} {% if speaker.nombre %}
+          <div class="info-field-speaker">Nombre: {{speaker.nombre}}</div>
+          {% endif %}{% if speaker.email %}
+          <div class="info-field-speaker">Email: {{speaker.email}}</div>
+          {% endif %}{% if speaker.linkedin %}
+          <div class="info-field-speaker">Linkedin: {{speaker.linkedin}}</div>
+          {% endif %}{% if speaker.empresa %}
+          <div class="info-field-speaker">Empresa: {{speaker.empresa}}</div>
+          {% endif %}{% if speaker.cargo %}
+          <div class="info-field-speaker">Cargo: {{speaker.cargo}}</div>
+          {% endif %}
+        </div>
+        {% endfor %}
       </div>
       <div class="speaker-data">
         <h2>Contenido/s</h2>
-        {% for contenido in conferencia.contenido %} {% if contenido.tipo ==
-        'file' %}
-        <a
-          href="{{url_for('uploads', filename=contenido.contenido)}}"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img
-            src="{{url_for('static', filename='document.png')}}"
-            alt="file icon"
-            class="file-icon"
-          />
-        </a>
-        {% elif contenido.tipo == 'text' %}
-        <a
-          href="{{url_for('uploads', filename=contenido.contenido)}}"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img
-            src="{{url_for('static', filename='url.png')}}"
-            alt="file icon"
-            class="file-icon"
-          />
-        </a>
-        {% endif %} {% endfor %}
+        <div class="content-row">
+          {% for contenido in conferencia.contenido %} {% if contenido.tipo ==
+          'file' %}
+          <a
+            href="{{url_for('uploads', filename=contenido.contenido)}}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="{{url_for('static', filename='document.png')}}"
+              alt="file icon"
+              class="file-icon"
+            />
+          </a>
+          {% elif contenido.tipo == 'text' %}
+          <a
+            href="{{contenido.contenido}}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="{{url_for('static', filename='url.png')}}"
+              alt="file icon"
+              class="file-icon"
+            />
+          </a>
+          {% endif %} {% endfor %}
+        </div>
       </div>
     </div>
     <script>

@@ -80,6 +80,20 @@ def congressView():
   
   # user_id = session["id"]
   conferencias = Conferencia.getCongressForCongressView()
+  cantidad = len(conferencias)
+
+  if(cantidad == 5):
+    conferencias.pop(cantidad-1)
+
+  return render_template("congress.html", conferencias=conferencias, cantidad=cantidad)
+
+@app.route("/congress/all/", methods=["GET"])
+def congressViewAll():
+  if not session:
+    return redirect("/")
+  
+  # user_id = session["id"]
+  conferencias = Conferencia.getCongressForAllCongressView()
 
   return render_template("congress.html", conferencias=conferencias)
 
@@ -89,9 +103,24 @@ def myCongressView():
     return redirect("/")
 
   user_id = session["id"]
-  mis_conferencias = Conferencia.getCongressForMyCongressView(user_id)
+  conferencias = Conferencia.getCongressForMyCongressView(user_id)
 
-  return render_template("mis-conferencias.html", conferencias=mis_conferencias)
+  cantidad = len(conferencias)
+
+  if(cantidad == 5):
+    conferencias.pop(cantidad-1)
+
+  return render_template("mis-conferencias.html", conferencias=conferencias, cantidad=cantidad)
+
+@app.route("/my-congress/all/" , methods=["GET"])
+def allMyCongressView():
+  if not session:
+    return redirect("/")
+
+  user_id = session["id"]
+  conferencias = Conferencia.getCongressForAllMyCongressView(user_id)
+
+  return render_template("mis-conferencias.html", conferencias=conferencias)
 
 @app.route("/create/", methods=["GET"])
 def createCongressView():
@@ -99,6 +128,7 @@ def createCongressView():
     return redirect("/")
   
   return render_template("create_congress.html")
+
 
 @app.route('/uploads/<filename>')
 def uploads(filename):
@@ -112,13 +142,15 @@ def createCongress():
   form = request.form.to_dict()
 
   #logica para guardar imagen congreso
+  nombre_archivo = ''
   archivo = request.files.get('imagen')
 
   if archivo and archivo.filename != '':
     nombre_archivo = archivo.filename
     ruta_archivo = os.path.join(app.config['UPLOAD_FOLDER'], nombre_archivo)
     archivo.save(ruta_archivo)
-    form["imagen"] = nombre_archivo
+    
+  form["imagen"] = nombre_archivo
 
   #logica para agregar a una lista de diccionarios la informacion de speakers y contenido
   imagenes_a_guardar = []
@@ -216,6 +248,22 @@ def createCongress():
   return jsonify({"status": "200", "message": message}), 200
   # return redirect("congress.html")
 
+@app.route("/edit/<id>/", methods=["GET"])
+def editCongressView(id):
+  if not session:
+    return redirect("/")
+  
+  conferencia = Conferencia.getCongressById(id)
+
+  if(len(conferencia) == 0):
+    return redirect("congress.html")
+  
+  conferencia = conferencia[0]
+  
+  conferencia.speaker = json.loads(conferencia.speaker)
+  conferencia.contenido = json.loads(conferencia.contenido)
+  
+  return render_template("edit_congress.html", conferencia=conferencia)
 
 
 @app.route("/congress/<id>/", methods=["GET"])

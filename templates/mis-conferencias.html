@@ -62,6 +62,7 @@
             <img
               src="{{url_for('static', filename='photo.png')}}"
               alt="icono imagen"
+              class="img-congress"
             />
             {% endif %}
             <h3>{{conferencia.nombre}}</h3>
@@ -74,9 +75,18 @@
         </div>
         {% endif %} {% endfor %}
       </div>
+      {% if cantidad and cantidad == 5 %}
       <div class="ver-mas-container">
-        <a href="" class="btn btn2">Ver más</a>
+        <a href="/my-congress/all" class="btn btn2">Ver más</a>
       </div>
+      {% endif %}
     </div>
+    <a href="/create/" class="add-congress">
+      <img
+        class="add-create-icon add d-inline-block"
+        src="{{url_for('static', filename='plus.png')}}"
+        alt="plus icon"
+      />
+    </a>
   </body>
 </html>
