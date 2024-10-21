@@ -11,8 +11,6 @@ window.addEventListener("load", () => {
 
   /* Verifico que la fecha minima sea la actual */
   dateInput.min = formattedDate;
-  /* Seteo la fecha actual, para evitar valores nulos al enviar */
-  dateInput.value = formattedDate;
 
   /* Logica que controla el despliegue del campo link inscripcion */
   let select_type = document.getElementsByName("tipo")[0];
@@ -33,7 +31,11 @@ window.addEventListener("load", () => {
   let speaker_row = document.querySelector(".speaker-row");
   let add_btn_speaker = document.getElementById("add-speaker");
   let remove_btn_speaker = document.getElementById("remove-speaker");
-  let counter_speaker = 1;
+  let speakers_amount = document.querySelectorAll('[name*="nombreSpeaker"]');
+  let counter_speaker = speakers_amount.length;
+  console.log({ counter_speaker, speakers_amount });
+
+  if (speakers_amount.length > 1) remove_btn_speaker.style.visibility = "unset";
 
   add_btn_speaker.addEventListener("click", () => {
     counter_speaker++;
@@ -146,7 +148,7 @@ window.addEventListener("load", () => {
     }
 
     let new_content_file = `
-      <div class="mb-3 content-item col-lg-4 contenido-${counter_content}">
+      <div class="mb-3 content-item col-lg-6 contenido-${counter_content}">
         <input
           class="form-control"
           type="file"
@@ -162,7 +164,7 @@ window.addEventListener("load", () => {
       </div>
     `;
     let new_content_url = `
-      <div class="mb-3 content-item col-lg-4 contenido-${counter_content}">
+      <div class="mb-3 content-item col-lg-6 contenido-${counter_content}">
         <input
           class="form-control"
           type="text"
@@ -198,7 +200,13 @@ window.addEventListener("load", () => {
     e.preventDefault();
     const formData = new FormData(e.target);
 
-    fetch("/edit/", {
+    let current_url = window.location.href.split("/");
+    let congress_id = current_url[current_url.length - 2];
+
+    console.log({ formData, current_url, congress_id });
+    // return;
+    if (!congress_id) return;
+    fetch(`/edit/${congress_id}/`, {
       method: "POST",
       body: formData,
     })
@@ -221,9 +229,10 @@ window.addEventListener("load", () => {
           errorContainer.appendChild(
             document.createRange().createContextualFragment(success_text)
           );
-          e.target.reset();
+          // e.target.reset();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          window.location.reload();
         }
-        window.scrollTo({ top: 0, behavior: "smooth" });
       })
       .catch((error) => {
         console.error("Error:", error);

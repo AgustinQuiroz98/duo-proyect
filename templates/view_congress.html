@@ -54,9 +54,16 @@
       {% if conferencia %}
       <div class="mb-3 btns-view-congress">
         <h1>{{conferencia.nombre}}</h1>
-        <a href="#qr-code" data-fancybox="qr">
-          <button class="btn btn-submit" id="qr-btn">Ver QR</button>
-        </a>
+        <div class="btn-options">
+          <a href="#qr-code" data-fancybox="qr">
+            <button class="btn btn-submit" id="qr-btn">Ver QR</button>
+          </a>
+          {% if conferencia.usuario == session["id"] %}
+          <a href="/edit/{{conferencia.idConferencias}}/">
+            <button class="btn btn-submit" id="qr-btn">Editar</button>
+          </a>
+          {% endif %}
+        </div>
       </div>
       {% endif %} {% if conferencia.imagen %}
       <img
@@ -71,8 +78,11 @@
       />
       {% endif %}
       <div class="info-field">Fecha Conferencia: {{conferencia.fecha}}</div>
-      <div class="info-field">Tipo de Conferencia: {{conferencia.tipo}}</div>
       {% if conferencia.tipo == 'private' %}
+      <div class="info-field">Tipo de Conferencia: Privada</div>
+      {% else %}
+      <div class="info-field">Tipo de Conferencia: Pública</div>
+      {% endif %} {% if conferencia.tipo == 'private' %}
       <div class="info-field">
         Link Inscripción: {{conferencia.linkInscripcion}}
       </div>
@@ -100,7 +110,7 @@
           {% endif %} {% if speaker.nombre %}
           <div class="info-field-speaker">Nombre: {{speaker.nombre}}</div>
           {% endif %}{% if speaker.email %}
-          <div class="info-field-speaker">Email: {{speaker.email}}</div>
+          <div class="info-field-speaker">Correo: {{speaker.email}}</div>
           {% endif %}{% if speaker.linkedin %}
           <div class="info-field-speaker">Linkedin: {{speaker.linkedin}}</div>
           {% endif %}{% if speaker.empresa %}

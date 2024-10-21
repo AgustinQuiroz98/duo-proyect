@@ -21,7 +21,7 @@
       type="text/javascript"
       src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"
     ></script>
-    <script src="{{url_for('static', filename='create-congress.js')}}"></script>
+    <script src="{{url_for('static', filename='edit-congress.js')}}"></script>
   </head>
   <body>
     <nav>
@@ -55,7 +55,7 @@
     {% if conferencia %}
     <div class="container create-container">
       <div class="create-title">
-        <h1>Edit Conferencia</h1>
+        <h1>Editar Conferencia</h1>
         <span class="medal">Campos obligatorios (*)</span>
       </div>
       <ul id="error-messages">
@@ -85,6 +85,14 @@
               type="file"
               name="imagen"
               accept="image/*"
+              value="{{conferencia.imagen}}"
+            />
+            <input
+              class="form-control"
+              type="text"
+              name="imagenPrevia"
+              value="{{conferencia.imagen}}"
+              hidden
             />
           </div>
           <div class="mb-3 col-lg-4">
@@ -128,7 +136,7 @@
           </div>
           <div class="mb-3 col-lg-4">
             <label class="form-label" for="linkUbicacion"
-              >Link Ubicacion (*)</label
+              >Link Ubicación (*)</label
             >
             <input
               class="form-control"
@@ -172,20 +180,29 @@
           </span>
         </div>
         <div class="row speaker-row">
-          {% for speaker in conferencia.speaker %} {% if speaker.imagen != '' %}
-          <label for="imagen" class="form-label"
-            >Imagen Actual Speaker {{loop.index}}:</label
-          >
-          <img
-            src="{{url_for('uploads', filename=speaker.imagen)}}"
-            alt="imagen perfil"
-            class="img-congress-edit"
-          />
-          {% endif %}
+          {% for speaker in conferencia.speaker %}
           <div class="row speaker-content speaker-{{loop.index}}">
+            <div class="mb-3 col-lg-12">
+              <label for="imagen" class="form-label"
+                >Imagen Actual Speaker {{loop.index}}:</label
+              >
+              {% if speaker.imagen != '' and speaker.imagen %}
+              <img
+                src="{{url_for('uploads', filename=speaker.imagen)}}"
+                alt="imagen perfil"
+                class="img-congress-edit"
+              />
+              {% else %}
+              <img
+                src="{{url_for('static', filename='photo.png')}}"
+                alt="imagen perfil"
+                class="img-congress-edit"
+              />
+              {% endif %}
+            </div>
             <div class="mb-3 col-lg-4">
               <label for="imagenSpeaker" class="form-label"
-                >Imagen Speaker</label
+                >Imagen Speaker {{loop.index}}</label
               >
               <input
                 class="form-control"
@@ -194,9 +211,17 @@
                 accept="image/*"
                 value="{{speaker.imagen}}"
               />
+              <input
+                type="text"
+                name="imagenPreviaSpeaker{{loop.index}}"
+                value="{{speaker.imagen}}"
+                hidden
+              />
             </div>
             <div class="mb-3 col-lg-4">
-              <label class="form-label" for="nombre">Nombre Speaker (*)</label>
+              <label class="form-label" for="nombre"
+                >Nombre Speaker {{loop.index}} (*)</label
+              >
               <input
                 class="form-control"
                 type="text"
@@ -206,17 +231,21 @@
               />
             </div>
             <div class="mb-3 col-lg-4">
-              <label class="form-label" for="email">Email Speaker</label>
+              <label class="form-label" for="email"
+                >Correo Speaker {{loop.index}}</label
+              >
               <input
                 class="form-control"
                 type="text"
                 name="emailSpeaker{{loop.index}}"
-                placeholder="Ingrese el email del Speaker"
+                placeholder="Ingrese el correo del Speaker"
                 value="{{speaker.email}}"
               />
             </div>
             <div class="mb-3 col-lg-4">
-              <label class="form-label" for="linkedin">linkedin Speaker</label>
+              <label class="form-label" for="linkedin"
+                >linkedin Speaker {{loop.index}}</label
+              >
               <input
                 class="form-control"
                 type="text"
@@ -226,7 +255,9 @@
               />
             </div>
             <div class="mb-3 col-lg-4">
-              <label class="form-label" for="cargo">Cargo Speaker</label>
+              <label class="form-label" for="cargo"
+                >Cargo Speaker {{loop.index}}</label
+              >
               <input
                 class="form-control"
                 type="text"
@@ -236,7 +267,9 @@
               />
             </div>
             <div class="mb-3 col-lg-4">
-              <label class="form-label" for="Empresa">Empresa Speaker</label>
+              <label class="form-label" for="Empresa"
+                >Empresa Speaker {{loop.index}}</label
+              >
               <input
                 class="form-control"
                 type="text"
@@ -288,23 +321,30 @@
           <div class="row content-row">
             {% for contenido in conferencia.contenido %} {% if contenido.tipo ==
             'file' %}
-            <a
-              href="{{contenido.contenido}}"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img
-                src="{{url_for('static', filename='url.png')}}"
-                alt="file icon"
-                class="file-icon-edit"
-              />
-            </a>
-            <div class="mb-3 content-item col-lg-4 contenido-{{loop.index}}">
+            <div class="mb-3 content-item col-lg-6 contenido-{{loop.index}}">
+              <a
+                href="{{contenido.contenido}}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src="{{url_for('static', filename='document.png')}}"
+                  alt="file icon"
+                  class="file-icon-edit"
+                />
+              </a>
               <input
                 class="form-control"
                 type="file"
                 name="contenido-{{loop.index}}"
                 value="{{contenido.contenido}}"
+              />
+              <input
+                class="form-control"
+                type="text"
+                name="contenidoPrevio-{{loop.index}}"
+                value="{{contenido.contenido}}"
+                hidden
               />
               <img
                 class="add-remove-icon add d-inline-block"
@@ -315,18 +355,18 @@
               />
             </div>
             {% else %}
-            <a
-              href="{{url_for('uploads', filename=contenido.contenido)}}"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img
-                src="{{url_for('static', filename='document.png')}}"
-                alt="file icon"
-                class="file-icon-edit"
-              />
-            </a>
-            <div class="mb-3 content-item col-lg-4 contenido-{{loop.index}}">
+            <div class="mb-3 content-item col-lg-6 contenido-{{loop.index}}">
+              <a
+                href="{{url_for('uploads', filename=contenido.contenido)}}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src="{{url_for('static', filename='url.png')}}"
+                  alt="file icon"
+                  class="file-icon-edit"
+                />
+              </a>
               <input
                 class="form-control"
                 type="text"

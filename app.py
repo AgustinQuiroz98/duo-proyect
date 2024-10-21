@@ -80,12 +80,17 @@ def congressView():
   
   # user_id = session["id"]
   conferencias = Conferencia.getCongressForCongressView()
+  past_conferencias = Conferencia.getPastCongressForCongressView()
   cantidad = len(conferencias)
+  past_cantidad = len(past_conferencias)
 
   if(cantidad == 5):
     conferencias.pop(cantidad-1)
 
-  return render_template("congress.html", conferencias=conferencias, cantidad=cantidad)
+  if(past_cantidad == 5):
+    past_conferencias.pop(past_cantidad-1)
+
+  return render_template("congress.html", conferencias=conferencias, cantidad=cantidad, past_conferencias=past_conferencias, past_cantidad=past_cantidad)
 
 @app.route("/congress/all/", methods=["GET"])
 def congressViewAll():
@@ -95,7 +100,17 @@ def congressViewAll():
   # user_id = session["id"]
   conferencias = Conferencia.getCongressForAllCongressView()
 
-  return render_template("congress.html", conferencias=conferencias)
+  return render_template("all-congress.html", conferencias=conferencias)
+
+@app.route("/past-congress/all/", methods=["GET"])
+def pastCongressViewAll():
+  if not session:
+    return redirect("/")
+  
+  # user_id = session["id"]
+  conferencias = Conferencia.getPastCongressForAllCongressView()
+
+  return render_template("all-congress.html", conferencias=conferencias)
 
 @app.route("/my-congress/" , methods=["GET"])
 def myCongressView():
@@ -104,13 +119,18 @@ def myCongressView():
 
   user_id = session["id"]
   conferencias = Conferencia.getCongressForMyCongressView(user_id)
+  past_conferencias = Conferencia.getPastCongressForMyCongressView(user_id)
 
   cantidad = len(conferencias)
+  past_cantidad = len(past_conferencias)
 
   if(cantidad == 5):
     conferencias.pop(cantidad-1)
 
-  return render_template("mis-conferencias.html", conferencias=conferencias, cantidad=cantidad)
+  if(past_cantidad == 5):
+    past_conferencias.pop(past_cantidad-1)
+
+  return render_template("mis-conferencias.html", conferencias=conferencias, cantidad=cantidad, past_conferencias=past_conferencias, past_cantidad=past_cantidad)
 
 @app.route("/my-congress/all/" , methods=["GET"])
 def allMyCongressView():
@@ -120,7 +140,17 @@ def allMyCongressView():
   user_id = session["id"]
   conferencias = Conferencia.getCongressForAllMyCongressView(user_id)
 
-  return render_template("mis-conferencias.html", conferencias=conferencias)
+  return render_template("all-mis-conferencias.html", conferencias=conferencias)
+
+@app.route("/past-my-congress/all/" , methods=["GET"])
+def allMyPastCongressView():
+  if not session:
+    return redirect("/")
+
+  user_id = session["id"]
+  conferencias = Conferencia.getPastCongressForAllMyCongressView(user_id)
+
+  return render_template("all-mis-conferencias.html", conferencias=conferencias)
 
 @app.route("/create/", methods=["GET"])
 def createCongressView():
@@ -265,6 +295,136 @@ def editCongressView(id):
   
   return render_template("edit_congress.html", conferencia=conferencia)
 
+@app.route("/edit/<id>/", methods=["POST"])
+def editCongress(id):
+  if not session:
+    return redirect("/")
+  
+  form = request.form.to_dict()
+
+  #logica para guardar imagen congreso
+  nombre_archivo = ''
+  imagen_previa = request.form.get('imagenPrevia')
+  archivo = request.files.get('imagen')
+
+  print('imagen previa',imagen_previa)
+
+  if not (archivo and archivo.filename != '') and imagen_previa != '':
+    nombre_archivo = imagen_previa
+  elif archivo and archivo.filename != '':
+      nombre_archivo = archivo.filename
+      ruta_archivo = os.path.join(app.config['UPLOAD_FOLDER'], nombre_archivo)
+      archivo.save(ruta_archivo)
+      
+  form["imagen"] = nombre_archivo
+
+  #logica para agregar a una lista de diccionarios la informacion de speakers y contenido
+  imagenes_a_guardar = []
+  archivos_contenido_a_guardar = []
+  speakers = []
+  contenidos = []
+  i = 1
+  j = 1
+
+  #Speakers
+  while True:
+    nombre = request.form.get(f'nombreSpeaker{i}')
+    email = request.form.get(f'emailSpeaker{i}')
+    linkedin = request.form.get(f'linkedinSpeaker{i}')
+    cargo = request.form.get(f'cargoSpeaker{i}')
+    empresa = request.form.get(f'empresaSpeaker{i}')
+    
+    archivo_imagen = request.files.get(f'imagenSpeaker{i}')
+    speaker_imagen_previo = request.form.get(f'imagenPreviaSpeaker{i}')
+    imagen_nombre = ''
+    
+    if not nombre:
+      break
+
+    if not (archivo_imagen and archivo_imagen.filename != '') and speaker_imagen_previo != '' and speaker_imagen_previo:
+      imagen_nombre = speaker_imagen_previo
+    elif archivo_imagen and archivo_imagen.filename != '':
+      imagen_nombre = archivo_imagen.filename
+      imagenes_a_guardar.append((archivo_imagen, imagen_nombre))
+
+    
+    speaker = {
+      'nombre': nombre,
+      'email': email,
+      'linkedin': linkedin,
+      'cargo': cargo,
+      'empresa': empresa,
+      'imagen': imagen_nombre
+    }
+    speakers.append(speaker)
+    i += 1 
+  
+  for archivo, nombre_archivo in imagenes_a_guardar:
+    ruta_archivo = os.path.join(app.config['UPLOAD_FOLDER'], nombre_archivo)
+    archivo.save(ruta_archivo)
+
+  #Contenidos
+  while True:
+    contenido_archivo = request.files.get(f'contenido-{j}')
+    contenido_texto = request.form.get(f'contenido-{j}')
+    contenido_archivo_previo = request.form.get(f'contenidoPrevio-{j}')
+
+    if not contenido_archivo and not contenido_texto and not contenido_archivo_previo:
+      break
+
+    print('contenido_archivo_previo: ', contenido_archivo_previo)
+    if not (contenido_archivo and contenido_archivo.filename != '') and contenido_archivo_previo != '' and contenido_archivo_previo:
+      archivo_nombre = contenido_archivo_previo
+      contenido = {
+        'tipo': 'file',
+        'contenido': archivo_nombre
+      }
+    elif contenido_archivo and contenido_archivo.filename != '':
+      archivo_nombre = contenido_archivo.filename
+      archivos_contenido_a_guardar.append((contenido_archivo, archivo_nombre))
+      contenido = {
+        'tipo': 'file',
+        'contenido': archivo_nombre
+      }
+    else:
+      contenido = {
+        'tipo': 'text',
+        'contenido': contenido_texto
+      }
+
+    contenidos.append(contenido)
+    j += 1
+
+  for archivo, nombre_archivo in archivos_contenido_a_guardar:
+    ruta_archivo = os.path.join(app.config['UPLOAD_FOLDER'], nombre_archivo)
+    archivo.save(ruta_archivo)
+
+  # Procesar los datos o hacer algo con ellos
+  print("Speakers:", speakers)
+  print("Contenidos:", contenidos)
+
+  form["speaker"] = json.dumps(speakers)
+  form["contenido"] = json.dumps(contenidos)
+
+  print("Form Speakers:", form["speaker"])
+  print("Form Contenidos:", form["contenido"])
+
+  errors = validate_congress_data(form)
+  if(len(errors) > 0):
+    print('muchos errores')
+    return jsonify({"status": "401", "errors": errors}), 400
+  
+  form["fecha"] = transformDate(form["fecha"])
+  form["user_id"] = session["id"]
+  form["congress_id"] = id
+
+  Conferencia.editCongress(form)
+
+
+  message = ["Conferencia editada con éxito !"]
+
+  return jsonify({"status": "200", "message": message}), 200
+  # return redirect("congress.html")
 
 @app.route("/congress/<id>/", methods=["GET"])
 def congressViewByID(id):

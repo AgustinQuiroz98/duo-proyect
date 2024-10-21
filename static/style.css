@@ -228,6 +228,14 @@ button.btn.btn-submit:hover {
   background-color: #fff;
   border: 2px solid #47525e;
 }
+.no-data-medal {
+  margin-left: 1rem;
+  margin-bottom: 3rem;
+}
+.btn-options {
+  display: flex;
+  gap: 0.3rem;
+}
 /* Crear Conferencia */
 .create-title {
   margin-bottom: 3rem;
@@ -295,6 +303,7 @@ button.btn.btn-submit:hover {
 }
 .content-item {
   display: flex;
+  align-items: center;
   gap: 2rem;
   padding: 1rem 12px;
 }
@@ -323,7 +332,7 @@ button.btn.btn-submit:hover {
   display: flex;
   align-items: center;
   gap: 2rem;
-  justify-content: center;
+  justify-content: flex-start;
 }
 .content-row a {
   text-decoration: none;

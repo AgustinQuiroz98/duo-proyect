@@ -80,7 +80,49 @@
     </div>
     {% else %}
     <div class="container">
-      <h2>No existen conferencias aún</h2>
+      <h2>Próximas Conferencias</h2>
+      <p class="no-data-medal">No existen conferencias próximas aún</p>
+    </div>
+    {% endif %} {% if past_conferencias %}
+    <div class="container mb-3">
+      <h2>Conferencias Pasadas</h2>
+      <div class="row mb-3">
+        {% for conferencia in past_conferencias %}
+        <div class="col-lg-3">
+          <div class="conference-card">
+            {% if conferencia.imagen %}
+            <img
+              src="{{url_for('uploads', filename=conferencia.imagen)}}"
+              alt="imagen conferencia"
+              class="img-congress"
+            />
+            {% else %}
+            <img
+              src="{{url_for('static', filename='photo.png')}}"
+              alt="icono imagen"
+              class="img-congress"
+            />
+            {% endif %}
+            <h3>{{conferencia.nombre}}</h3>
+            <div class="mb-3">
+              <a href="/congress/{{conferencia.idConferencias}}" class="btn"
+                >Ver Conferencia</a
+              >
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% if past_cantidad and past_cantidad == 5 %}
+      <div class="ver-mas-container">
+        <a href="/past-congress/all/" class="btn btn2">Ver más</a>
+      </div>
+      {% endif %}
+    </div>
+    {% else %}
+    <div class="container">
+      <h2>Conferencias Pasadas</h2>
+      <p class="no-data-medal">No existen conferencias pasadas aún</p>
     </div>
     {% endif %}
     <a href="/create/" class="add-congress">
